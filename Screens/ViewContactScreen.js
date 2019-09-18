@@ -43,7 +43,7 @@ class ViewContactScreen extends React.Component{
     await AsyncStorage.getItem(key)
       .then( contactJsonString =>{
         var contact = JSON.parse(contactJsonString);
-        contact[key] = key;
+        contact["key"] = key;
         this.setState(contact);
       })
       .catch( error => {
@@ -54,10 +54,10 @@ class ViewContactScreen extends React.Component{
   callAction = phone => {
     let phoneNumber = phone;
     if ( Platform.OS !== "android" ) {
-      phoneNumber = `telpromt : ${phone}`
+      phoneNumber = `telpromt:${phone}`
     }
     else {
-      phoneNumber = `tel : ${phone}`
+      phoneNumber = `tel:${phone}`
     }
     Linking.canOpenURL(phoneNumber)
       .then( supported => {
@@ -72,11 +72,95 @@ class ViewContactScreen extends React.Component{
       })
   }
 
+  smsAction = phone => {
+    let phoneNumber = phone;
+    phoneNumber = `sms:${phone}`;
+    Linking.canOpenURL(phoneNumber)
+      .then( supported => {
+        if (!supported) {
+          Alert.alert("Phone Number is not available")
+        } else {
+          return Linking.openURL(phoneNumber)
+        }
+      })
+      .catch( error => {
+        console.log(error)
+      })
+  }
+
+  editContact = (key) => {
+    this.props.navigation.navigate("EditContact", {key:key});
+  }
+
   render(){
       return(
-          <View>
-              <Text> View Contact Screen </Text>
-          </View>
+          <ScrollView style = { styles.container }>
+              <View style = {styles.contactIconContainer}>
+                 <Text style = {styles.contactIcon}> {this.state.firstName[0].toUpperCase()} </Text>
+                 <View style = {styles.nameContainer}>
+                    <Text style = {styles.name}> {this.state.firstName} {this.state.lastName} </Text>
+                 </View>
+              </View>
+
+              <Card style= {styles.actionContainer}>
+                <CardItem style = { styles.actionButton}>
+                  <TouchableOpacity
+                      onPress = { ()=> {this.callAction(this.state.phoneNumber);
+                    }}
+                  >
+                    <Entypo 
+                      name = "phone"
+                      size = {50}
+                      color = "#B83227"
+                    />
+                  </TouchableOpacity>
+                </CardItem>
+
+                <CardItem style = { styles.actionButton}>
+                  <TouchableOpacity
+                      onPress = { ()=> {this.smsAction(this.state.phoneNumber);
+                    }}
+                  >
+                    <Entypo 
+                      name = "message"
+                      size = {50}
+                      color = "#B83227"
+                    />
+                  </TouchableOpacity>
+                </CardItem>
+                
+              </Card>
+
+              <View style = {styles.infoContainer}>
+                <Card>
+                  <CardItem  bordered>
+                    <Text style = {styles.infoText}> Contact Number</Text>
+                  </CardItem>
+                  <CardItem bordered>
+                    <Text style = {styles.infoText}> {this.state.phoneNumber} </Text>
+                  </CardItem>
+                </Card>
+
+                <Card>
+                  <CardItem  bordered>
+                    <Text style = {styles.infoText}> Email </Text>
+                  </CardItem>
+                  <CardItem bordered>
+                    <Text style = {styles.infoText}> {this.state.email} </Text>
+                  </CardItem>
+                </Card>
+
+                <Card>
+                  <CardItem  bordered>
+                    <Text style = {styles.infoText}> Address </Text>
+                  </CardItem>
+                  <CardItem bordered>
+                    <Text style = {styles.infoText}> {this.state.address} </Text>
+                  </CardItem>
+                </Card>
+              </View>
+
+          </ScrollView>
       );
   }
 }
@@ -126,6 +210,9 @@ const styles = StyleSheet.create({
     actionText: {
       color: "#B83227",
       fontWeight: "900"
+    },
+    infoContainer: {
+      flexDirection: "column"
     }
   });
   

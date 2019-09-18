@@ -30,10 +30,10 @@ class AddNewContactScreen extends React.Component{
     saveContact = async () => {
         if ( 
             this.state.firstName !== "" &&
-            this.state.lastName !== "" &&
-            this.state.phoneNumber !== "" &&
-            this.state.email !== "" &&
-            this.state.address !== ""
+            //this.state.lastName !== "" &&
+            this.state.phoneNumber !== ""
+            // this.state.email !== "" &&
+            // this.state.address !== ""
          ) {
             //create contact object
             var contact = {
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
       margin: 10
     },
     button: {
-      backgroundColor: "#8395A7",
+      backgroundColor: "#BA2F16",
       marginTop: 40,
       borderRadius: 20
     },
