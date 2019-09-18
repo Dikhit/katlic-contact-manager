@@ -4,11 +4,12 @@ import {
   Text,
   StyleSheet, 
   TouchableWithoutFeedback,
-   Keyboard,
-   AsyncStorage,
-   Alert
+  Keyboard,
+  AsyncStorage,
+  Alert,
+  ScrollView
 } from 'react-native';
-import { Form, Item, Label, Button } from 'native-base';
+import { Form, Item, Label, Button, Input } from 'native-base';
 
 class EditContactScreen extends React.Component{
 
@@ -32,7 +33,7 @@ class EditContactScreen extends React.Component{
     const { navigation } = this.props;
     navigation.addListener("willFocus", ()=>{
       var key = this.props.navigation.getParam("key", "");
-      this.getContact();
+      this.getContact(key);
     })
   }
 
@@ -45,11 +46,140 @@ class EditContactScreen extends React.Component{
       })
       .catch( error => console.log(error) )
   }
+
+  updateContact = async key => {
+    if (
+      this.state.firstName !== "" &&
+      this.state.phoneNumber !== ""
+    ){
+      var contact = {
+        firstName : this.state.firstName,
+        lastName : this.state.lastName,
+        phoneNumber : this.state.phoneNumber,
+        email : this.state.email,
+        address : this.state.address
+      }
+      await AsyncStorage.mergeItem(key, JSON.stringify(contact))
+       .then( () => {
+         this.props.navigation.goBack();
+       })
+       .catch( error => {
+         console.log(error)
+       })
+     }
+  }
+
+  getAutoScroll = () => {
+    return styles.empty;
+  }
+
   render(){
       return(
-          <View>  
-              <Text> Edit Contact Screen </Text>
-          </View>
+          <TouchableWithoutFeedback
+            onPress = { () => {
+              Keyboard.dismiss();
+            }}
+          >
+            <ScrollView>
+              <Form>
+                <Item style = {styles.inputItem}>
+                   <Label> First Name </Label>
+                   <Input 
+                      autoCorrect = {false}
+                      autoCapitalize = "none"
+                      keyboardType = "default"
+                      onChangeText = {
+                        firstName => this.setState({
+                          firstName
+                        })
+                      }
+                      value = {
+                        this.state.firstName
+                      }
+                   />
+                </Item>
+
+                <Item style = {styles.inputItem}>
+                   <Label> last Name </Label>
+                   <Input 
+                      autoCorrect = {false}
+                      autoCapitalize = "none"
+                      keyboardType = "default"
+                      onChangeText = {
+                        lastName => this.setState({
+                          lastName
+                        })
+                      }
+                      value = {
+                        this.state.lastName
+                      }
+                   />
+                </Item>
+
+                <Item style = {styles.inputItem}>
+                   <Label> Phone Number </Label>
+                   <Input 
+                      autoCorrect = {false}
+                      autoCapitalize = "none"
+                      keyboardType = "default"
+                      onChangeText = {
+                        phoneNumber => this.setState({
+                          phoneNumber
+                        })
+                      }
+                      value = {
+                        this.state.phoneNumber
+                      }
+                   />
+                </Item>
+
+                <Item style = {styles.inputItem}>
+                   <Label> Email </Label>
+                   <Input 
+                      autoCorrect = {false}
+                      autoCapitalize = "none"
+                      keyboardType = "default"
+                      onChangeText = {
+                        email => this.setState({
+                          email
+                        })
+                      }
+                      value = {
+                        this.state.email
+                      }
+                   />
+                </Item>
+
+                <Item style = {styles.inputItem}>
+                   <Label> Address </Label>
+                   <Input 
+                      autoCorrect = {false}
+                      autoCapitalize = "none"
+                      keyboardType = "default"
+                      onChangeText = {
+                        address => this.setState({
+                         address
+                        })
+                      }
+                      value = {
+                        this.state.address
+                      }
+                      onPress = { () => this.getAutoScroll() }
+                   />
+                </Item>
+              </Form>
+              <Button 
+                style = {styles.button}
+                full 
+                onPress = { ()=> {
+                    this.updateContact(this.state.key);
+                }}
+              >
+                  <Text style={ styles.buttonText }> Update </Text>
+              </Button>
+              <View style = { styles.empty }></View>
+            </ScrollView>
+          </TouchableWithoutFeedback>
       );
   }
 }
@@ -65,11 +195,16 @@ const styles = StyleSheet.create({
     },
     button: {
       backgroundColor: "#B83227",
-      marginTop: 40
+      marginTop: 40,
+      borderRadius: 20
     },
     buttonText: {
       color: "#fff",
       fontWeight: "bold"
+    },
+    empty: {
+      height: 330,
+      backgroundColor: "#FFF"
     }
   });
   
