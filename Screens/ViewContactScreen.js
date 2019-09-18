@@ -1,7 +1,23 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  ScrollView, 
+  TouchableOpacity, 
+  Linking, 
+  Platform,
+  Alert,
+  AsyncStorage
+} from 'react-native';
+import { Card, CardItem } from 'native-base';
+import { Entypo } from '@expo/vector-icons';
 
 class ViewContactScreen extends React.Component{
+
+  static navigationOptions = {
+    title: 'Contact Details',
+  };
     render(){
         return(
             <View>
