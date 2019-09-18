@@ -15,16 +15,70 @@ import { Entypo } from '@expo/vector-icons';
 
 class ViewContactScreen extends React.Component{
 
+  constructor(props){
+    super(props);
+    this.state = {
+      firstName : "FirstName",
+      lastName : "LastName",
+      phoneNumber : "+91000",
+      email : "example@gmail.com",
+      address : "your address",
+      key : "something"
+    }
+  }
+
   static navigationOptions = {
     title: 'Contact Details',
   };
-    render(){
-        return(
-            <View>
-                <Text> View Contact Screen </Text>
-            </View>
-        );
+
+  componentDidMount(){
+    const { navigation } = this.props;
+    navigation.addListener("willFocus", ()=> {
+      var key = this.props.navigation.getParam("key", ""); 
+      this.getContact(key); 
+    })
+  }
+  
+  getContact = async key => {
+    await AsyncStorage.getItem(key)
+      .then( contactJsonString =>{
+        var contact = JSON.parse(contactJsonString);
+        contact[key] = key;
+        this.setState(contact);
+      })
+      .catch( error => {
+        console.log(error);
+      })
+  }
+
+  callAction = phone => {
+    let phoneNumber = phone;
+    if ( Platform.OS !== "android" ) {
+      phoneNumber = `telpromt : ${phone}`
     }
+    else {
+      phoneNumber = `tel : ${phone}`
+    }
+    Linking.canOpenURL(phoneNumber)
+      .then( supported => {
+        if (!supported) {
+          Alert.alert("Phone Number is not available")
+        } else {
+          return Linking.openURL(phoneNumber)
+        }
+      })
+      .catch( error => {
+        console.log(error)
+      })
+  }
+
+  render(){
+      return(
+          <View>
+              <Text> View Contact Screen </Text>
+          </View>
+      );
+  }
 }
 
 const styles = StyleSheet.create({
