@@ -93,7 +93,27 @@ class ViewContactScreen extends React.Component{
   }
 
   deleteContact = () => {
-
+    Alert.alert(
+      "Delete Contact ?",
+      `${this.state.firstName} ${this.state.lastName}`,
+      [
+        {
+          text: "cancel", onPress : ()=> {console.log("cancel report");}
+        },
+        {
+          text: "OK",
+          onPress: async ()=> {
+            await AsyncStorage.removeItem(this.state.key)
+              .then( () => {
+                this.props.navigation.goBack();
+              })
+              .catch( error => {
+                console.log(error);
+              })
+          }
+        }
+      ]
+    )
   }
 
   render(){
