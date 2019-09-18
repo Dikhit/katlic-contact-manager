@@ -92,6 +92,10 @@ class ViewContactScreen extends React.Component{
     this.props.navigation.navigate("EditContact", {key:key});
   }
 
+  deleteContact = () => {
+
+  }
+
   render(){
       return(
           <ScrollView style = { styles.container }>
@@ -113,6 +117,7 @@ class ViewContactScreen extends React.Component{
                       size = {50}
                       color = "#B83227"
                     />
+                    <Text style = {styles.actionText}> Call </Text>
                   </TouchableOpacity>
                 </CardItem>
 
@@ -126,9 +131,37 @@ class ViewContactScreen extends React.Component{
                       size = {50}
                       color = "#B83227"
                     />
+                    <Text style = {styles.actionText}> sms </Text>
                   </TouchableOpacity>
                 </CardItem>
-                
+                  
+                <CardItem style = { styles.actionButton}>
+                  <TouchableOpacity
+                      onPress = { ()=> {this.editContact(this.state.key);
+                    }}
+                  >
+                    <Entypo 
+                      name = "edit"
+                      size = {50}
+                      color = "#B83227"
+                    />
+                    <Text style = {styles.actionText}> edit </Text>
+                  </TouchableOpacity>
+                </CardItem>
+
+                <CardItem style = { styles.actionButton}>
+                  <TouchableOpacity
+                      onPress = { ()=> {this.deleteContact(this.state.key);
+                    }}
+                  >
+                    <Entypo 
+                      name = "trash"
+                      size = {50}
+                      color = "#B83227"
+                    />
+                    <Text style = {styles.actionText}> delete </Text>
+                  </TouchableOpacity>
+                </CardItem>
               </Card>
 
               <View style = {styles.infoContainer}>
@@ -159,7 +192,6 @@ class ViewContactScreen extends React.Component{
                   </CardItem>
                 </Card>
               </View>
-
           </ScrollView>
       );
   }
@@ -200,7 +232,8 @@ const styles = StyleSheet.create({
       fontWeight: "300"
     },
     actionContainer: {
-      flexDirection: "row"
+      flexDirection: "row",
+      height : 70
     },
     actionButton: {
       flex: 1,
